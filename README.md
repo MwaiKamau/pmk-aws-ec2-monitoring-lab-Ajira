@@ -1,7 +1,9 @@
 <img width="2560" height="1440" alt="Launching-Your-Amazon-EC2-Instance" src="https://github.com/user-attachments/assets/bb23e00e-c0c1-4e0c-bc2c-ac0e7af1079e" />
 <img width="1097" height="932" alt="ec2-instance-connect-endpoint-1" src="https://github.com/user-attachments/assets/df21d4e6-3f75-44e8-8611-a2225e6846b0" />
 <img width="1000" height="469" alt="instance_storage" src="https://github.com/user-attachments/assets/46bf36c7-7503-4171-b765-a6af80653b04" />
-![PMK-AWS-Ajira-Alarm](https://github.com/user-attachments/assets/c1f111ad-eb2b-4049-af34-bf8cfdde3e9a)
+
+![PMK-AWS-Ajira-Alarm](https://github.com/user-attachments/assets/e44d30ec-11ea-4042-ae17-7d84f71d23f2)
+
 
 
 Here is a detailed, step-by-step guide to creating your first EC2 instance. This tutorial is designed for absolute beginners and includes instructions for publishing on GitHub and Medium (see also notes on how to save the screenshots for later use).
