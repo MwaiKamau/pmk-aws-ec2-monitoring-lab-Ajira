@@ -6,6 +6,10 @@
 
 
 
+![PMK-AWS-Ajira-Alarm-03](https://github.com/user-attachments/assets/5df5a1a6-275b-4f10-a1f1-a29a312b178d)
+
+
+
 Here is a detailed, step-by-step guide to creating your first EC2 instance. This tutorial is designed for absolute beginners and includes instructions for publishing on GitHub and Medium (see also notes on how to save the screenshots for later use).
 
 Creating Your First Amazon EC2 Instance: A Complete Beginner's Guide
