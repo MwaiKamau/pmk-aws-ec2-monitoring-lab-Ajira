@@ -89,11 +89,11 @@ Picking t2.micro made sense. This time around, the screen showed "Free tier elig
 **1.7 Key Pair Created**-
 This moment gave me pause. What even is a key pair?
 
-_That thing? It works like a passcode for your machine online. Without it, you just can’t get in._
++ _That thing? It works like a passcode for your machine online. Without it, you just can’t get in._
 
-A window popped up after I hit Create new key pair. My-first-keypair appeared in the name box. Instead of defaults, I picked RSA along with the .pem format. The system reacted by showing a download prompt. At that moment, a file landed on my local drive.
++ A window popped up after I hit Create new key pair. My-first-keypair appeared in the name box. Instead of defaults, I picked RSA along with the .pem format. The system reacted by showing a download prompt. At that moment, a file landed on my local drive.
 
-Almost messed up big time. That file nearly vanished. Keep hold of it. Tuck it away where it won’t disappear. Replacing it isn’t an option. My copy lives inside a folder named AWS-KEYS. Made sure another version sits safely elsewhere.
++ Almost messed up big time. That file nearly vanished. Keep hold of it. Tuck it away where it won’t disappear. Replacing it isn’t an option. My copy lives inside a folder named AWS-KEYS. Made sure another version sits safely elsewhere.
 
 **1.8 Configured Network Settings**-
 This felt overwhelming at first, yet when I pressed Edit, there it was - AWS had quietly prepared both the Default VPC along with a Default subnet. A quiet nod went out to the person behind that move.
