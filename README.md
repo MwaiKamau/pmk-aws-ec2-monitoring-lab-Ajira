@@ -65,7 +65,7 @@ Here is how I see the structure - forget strict terms, this is simply what makes
 
 Funny how a single image made it all fall into place.
 
-**launching my first EC2 instance**-
+**1.0 launching my first EC2 instance**-
 Finding my way took some tries. That mix-up? Right there - that one tripped me up - might slow you down too.
 
 **1.1 Logged into AWS Console**-
@@ -120,7 +120,7 @@ I waited, then pressed the button.
 
 Magic shimmered in the air. Not quite magic, though - just me figuring things out.
 
-**Create an Alert System with SNS**-
+**2.0 Create an Alert System with SNS**-
 These days, giving my server a voice feels like the next step. It started making sense after thinking it through slowly. A quiet machine that answers back - that idea stuck around. Talking instead of typing began to seem natural. The silence between us needed breaking somehow. Words replacing clicks just made sense eventually.
 
 **2.1 Opened SNS**-
@@ -145,7 +145,7 @@ A message waited inside my inbox, sent by AWS Notifications. There it was - a pr
 
 A screen lit up with words: my name was on a list. That moment brought quiet satisfaction. Messages from my machine could finally reach me by mail
 
-**Create CloudWatch Alarm**-
+**3.0 Create CloudWatch Alarm**-
 Finding someone to keep an eye on my server now.
 
 **3.1 Opened CloudWatch**-
@@ -179,7 +179,7 @@ A tap on Create alarm made it show up right away, sitting there in the list with
 
 A shadow watches over my server these days. It stands silent, always on duty.
 
-**Step Four: Testing All Parts**-
+**4.0 Step Four: Testing All Parts**-
 Here it was, time to see. Would the setup do what it needed to?
 
 **4.1 Connected to My Instance**-
