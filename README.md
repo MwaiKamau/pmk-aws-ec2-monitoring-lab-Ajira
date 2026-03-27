@@ -10,310 +10,304 @@
 
 
 
-Here is a detailed, step-by-step guide to creating your first EC2 instance. This tutorial is designed for absolute beginners and includes instructions for publishing on GitHub and Medium (see also notes on how to save the screenshots for later use).
+**Here is a detailed, step-by-step guide on how I created my first EC2 instance.** I designed this tutorial for absolute beginners, and it includes instructions for publishing on GitHub and Medium (see also notes on how to save the screenshots for later use).
 
-Creating Your First Amazon EC2 Instance: A Complete Beginner's Guide
-Section 1: Project Title and Description
+You’re sitting across from me now, coffee in hand, ready to dive into EC2 like we’ve done a hundred times before. Picture this: I’m sketching things out on a napkin because whiteboards feel too stiff for what we’re about to do. We start slow - launch an instance, pick an AMI, nothing wild yet. 
 
-"AWS EC2 Hands-On: Launch Your First Virtual Server with Monitoring & Alerts"
-Project Description
+Then security groups come up, and yeah, they matter more than most admit at first. You frown slightly, so I pause, let it sink in. Subnets pop up next; one wrong choice here and everything feels off later. Key pairs? Always trip someone up, but not you - not today. Each click builds something real under your fingers. The console blinks once, then confirms: running. Your face lights up. It’s alive - but better, because you built it.
 
-This project is a comprehensive, hands-on introduction to Amazon Web Services (AWS) Elastic Compute Cloud (EC2). As a beginner or novice cloud practitioner, you will learn how to launch your first virtual server (an EC2 instance) in the cloud. You will then configure professional-grade monitoring using Amazon CloudWatch to track the server's CPU performance and set up an email alert system using Amazon Simple Notification Service (SNS). Finally, you will simulate a high server load to trigger a real-time alert, giving you practical experience in cloud operations. By the end of this tutorial, you will have successfully built a mini cloud monitoring system, a fundamental skill for any cloud engineer.
+**First Time Using EC2 As a Cloud Beginner**
+A fresh start on setting up your first online machine - simple steps, real mistakes, what actually works. Watch it run, catch problems early, and learn while doing. This path skips confusion, focuses on clarity, and builds confidence slowly. Mistakes happen. They teach more than success ever could.
 
-Section 2: Architecture Overview
-Before we start clicking, it's crucial to understand the AWS building blocks we'll be using. The diagram below illustrates the infrastructure we will create.
-+-----------------------------------------------------------------------+
-|                           AWS Cloud                                    |
-|  +-----------------------------------------------------------------+  |
-|  |                        AWS Region (e.g., US East N. Virginia)   |  |
-|  |                                                                 |  |
-|  |  +--------------------------+    +----------------------------+  |  |
-|  |  |     Default VPC          |    |       CloudWatch           |  |  |
-|  |  |  (Virtual Private Cloud) |    |  (Monitoring Service)      |  |  |
-|  |  |                          |    |                            |  |  |
-|  |  |  +-------------------+   |    |  +----------------------+  |  |  |
-|  |  |  |   Public Subnet   |   |    |  |      Alarm           |  |  |  |
-|  |  |  |  (in AZ us-east-1a)|   |    |  | (Triggers when CPU  |  |  |  |
-|  |  |  |                   |   |    |  |    > 70% for 5 min)  |  |  |  |
-|  |  |  |  +-------------+  |   |    |  +----------+-----------+  |  |  |
-|  |  |  |  | EC2 Instance |<----|----|------------|--------------|  |  |  |
-|  |  |  |  | (t2.micro)   |  |   |    |            |              |  |  |  |
-|  |  |  |  +-------------+  |   |    |            |              |  |  |  |
-|  |  |  |        ^          |   |    +------------|--------------+  |  |  |
-|  |  |  +--------|----------+   |                 |                 |  |  |
-|  |  |           |              |                 v                 |  |  |
-|  |  |  +--------|----------+   |    +----------------------------+  |  |  |
-|  |  |  |  Internet Gateway |   |    |            SNS             |  |  |  |
-|  |  |  |     (IGW)         |   |    |   (Notification Service)  |  |  |  |
-|  |  |  +--------^----------+   |    |                            |  |  |  |
-|  |  +-----------|--------------+    |  +----------------------+  |  |  |  |
-|  |              |                   |  |       Topic          |  |  |  |  |
-|  +--------------|-------------------|--| (HighCPUAlerts)      |  |  |  |  |
-|                 |                   |  +----------+-----------+  |  |  |  |
-|                 |                   |             |              |  |  |  |
-+-----------------|-------------------|-------------|--------------+  |  |
-                  |                   |             |                 |  |
-                  |                   |             v                 |  |
-                  |                   |    +-------------------+      |  |
-                  |                   |    |  Email Subscription|      |  |
-                  |                   |    | (your@email.com)  |      |  |
-                  |                   |    +-------------------+      |  |
-                  |                   |                               |  |
-                  v                   v                               v  |
-            (Your Computer)    (Your Inbox)                (Your Phone)  |
-Let's break down each component                                          |
-Virtual Private Cloud (VPC): This is your private, isolated section of the AWS cloud. Think of it as your own data centre in the cloud. For this project, we'll use the Default VPC, which AWS automatically creates for you. It comes with a pre-configured internet gateway and subnets, making it perfect for beginners.
+**Why I Wrote This**
+Truth is, I’ll speak plainly.
 
-Subnet: A subnet is a range of IP addresses within your VPC. A subnet lives in a single Availability Zone. We will launch our EC2 instance in a Public Subnet, which means it will have internet access, allowing us to connect to it from our computer.
+Funny thing - my gut reaction to hearing “launch an EC2 instance” was nerves. Back then, cloud stuff seemed built for folks with stacks of diplomas, one after another.
 
-Internet Gateway (IGW): This is a horizontally scaled, redundant, and highly available VPC component that allows communication between your VPC and the internet. The default VPC already has one attached.
+Yet this truth hit me slowly - beauty lives right inside, how simple it is.
 
-EC2 Instance: This is our virtual server. We'll be launching a t2.micro instance, which is eligible for the AWS Free Tier.
+This guide came together just how I hoped to find one years ago. Not stuffed with terms tossed out randomly. Nothing pretending you’ve memorised networking basics already. More like a quiet chat, shoulder to shoulder, watching my earliest try at starting an EC2 instance - one wrong turn, then small win after small win.
 
-CloudWatch: This is AWS's monitoring service. We will create a CloudWatch Alarm that constantly watches the CPU Utilization metric of our EC2 instance.
+Right now, I’m where I am - and still making it happen. That means you could too, just by moving forward. This next part? We’ll get there at the same pace.
 
-SNS (Simple Notification Service): This is a managed pub/sub messaging service. We will create an SNS Topic and subscribe our email address to it. When the CloudWatch alarm is triggered, it will send a message to this topic, which will then be forwarded to our email.
-Section 3: Step-by-Step Setup Instructions
-Prerequisites
-An AWS account. If you don't have one, go to aws.amazon.com and sign up. You will need a credit card to verify your identity, but you will not be charged as long as you stay within the Free Tier limits.
+**What We're Building**
+When we finish this guide, both of us will already know:
 
-Step 1: Launch an EC2 Instance
-Log in to the AWS Management Console.
+A fresh EC2 machine now runs inside Amazon's network. This one lives entirely online, no physical box needed. Built using AWS tools, it powers up remotely. A cloud-based setup means access from anywhere counts. Remote computing starts here, flexible by design.
 
-In the "Find Services" search bar, type EC2 and select it to open the EC2 Dashboard.
+Keep an eye on how hard the processor is working by turning on tracking tools. Watch what happens inside when tasks run, using built-in checks. 
 
-On the EC2 Dashboard, click the big orange "Launch Instance" button.
+Spot shifts in speed through steady observation over time. Notice changes quietly while systems stay active behind the scenes.
 
-(Screenshot Suggestion: EC2 Dashboard with "Launch Instance" button highlighted)
+Got alerts by email that do what they promise. Works without fuss. Sends updates when things shift. No extra steps needed. Runs smoothly in the background. Catches changes fast. Stays quiet till there is something real. Shows up only when it matters.
 
-Name your instance: In the "Name and tags" section, enter MyFirstEC2Instance.
+A burst of fake traffic hit the server, then alarms flashed instantly. The system reacted without delay when stress climbed past limits
 
-Choose an Amazon Machine Image (AMI): An AMI is a template for your server's operating system. Under "Application and OS Images," select Quick Start. Choose Amazon Linux (or Amazon Linux 2) and make sure the AMI is marked "Free Tier eligible".
+Imagine actually doing cloud tasks, not just reading. Hands-on work replaces theory every single time.
 
-(Screenshot Suggestion: The AMI selection area, showing "Amazon Linux" and "Free tier eligible" highlighted)
+**The Big Picture in Simple Words**
+Here is how I see the structure - forget strict terms, this is simply what makes sense in my head.
 
-Choose an Instance Type: This defines the hardware of your server. Under "Instance type," select t2.micro, which is also Free Tier eligible.
+Setting Up a Small Office in a Secure Business Park
 
-(Screenshot Suggestion: Instance type selection with t2.micro highlighted)
+A virtual private cloud works like a business park meant just for you. Think of it as land surrounded by walls, separate from everything else. Amazon sets up an initial area named the Default VPC right away. That means no need to lay down barriers yourself at the start.
 
-Create a Key Pair (Login): This is crucial for security. It's like a digital key to securely connect to your server.
+Picture a subnet like one particular building in a business park. Its spot is marked by an address. That is exactly where your server takes up space.
 
-Under "Key pair (login)," select "Create new key pair".
+A doorway stands where visitors arrive. Through it, folks step into your space from beyond. That opening? The internet gateway - your entry point.
 
-Give it a name, e.g., my-first-keypair.
+A single desk setup in an open room - that is what an EC2 instance feels like. It runs just like a real machine would, only it exists in the cloud. Think of it as a space where tasks happen quietly, without fuss. Instead of wood and metal, you get processing power and memory assigned on demand. Work lives here while everything else supports from behind.
 
-For "Key pair type," leave it as RSA.
+A single watcher keeps tabs on your servers, like someone noticing steam building behind closed doors. Heat spikes - say, CPU running hard - and that watcher signals trouble without delay. It sits there quietly until numbers climb, then speaks up fast.
 
-For "Private key file format," choose .pem (this works for Linux, Mac, and OpenSSH on Windows).
+A warning pops up when temperatures climb too high - like a watchful helper tapping you on the shoulder. It does not shout. Instead, it slips a note under the door. Heat builds inside, yet the alert arrives calm, clear. A signal moves out once thresholds shift. Think of it as someone leaning close, saying it is time to look. Not loud. Just firm. Attention follows
 
-Click "Create key pair". Your browser will automatically download the .pem file. SAVE THIS FILE IN A SAFE PLACE. You will not be able to download it again.
+Funny how a single image made it all fall into place.
 
-(Screenshot Suggestion: The "Create key pair" pop-up window)
+**launching my first EC2 instance**
+Finding my way took some tries. That mix-up? Right there - that one tripped me up - might slow you down too.
 
-Network Settings:
+**1.1 Logged into AWS Console**
+One day, I opened my browser, put aws.amazon.com into the bar up top. Logging in came next - smooth, quick. In case you’re new there, just make an account first thing. True, they want credit card details early on. Even so, I stuck strictly to what’s free. Not once did money leave my wallet.
 
-Under "Network settings," click the "Edit" button.
+**1.2 Found EC2**
+At first glance, the screen looked messy after I typed EC2 into the search. Then came a click. That one orange button stood out once I stopped expecting simplicity. A voice inside said keep going
 
-By default, AWS will select your "Default VPC" and a "Default subnet." This is perfect for our project.
+**1.3 Clicked "Launch Instance"**
+A sudden urge made me press that bright orange button. Each tap felt different - sometimes shaky, sometimes bold.
 
-For "Auto-assign public IP," ensure it is set to Enable.
+**1.4 Named My Instance**
+Something clicks when labels make sense - I put MyFirstEC2Instance under "Name and tags." Practice shapes up slowly, like naming resources right each time.
 
-Under "Firewall (security groups)," select "Create security group". This is your virtual firewall. We will allow SSH (for Linux) to connect to the server. Name the security group my-first-sg.
+**1.5 Select an Operating System**
+Later on, under Application and OS Images, Amazon Linux was what I picked. A line appeared below it - green letters saying Free tier eligible. Those words, colored like fresh leaves, stayed close with each step after that.
 
-Under "Inbound security groups rules," add a rule:
+**1.6 Selected Instance Type**
+Picking t2.micro made sense. This time around, the screen showed "Free tier eligible" once more. A small relief washed over me.
 
-Type: SSH
+**1.7 Key Pair Created**
+This moment gave me pause. What even is a key pair?
 
-Source: My IP (This automatically adds your current IP address, which is a good security practice).
+_That thing? It works like a passcode for your machine online. Without it, you just can’t get in._
 
-(Screenshot Suggestion: Network settings section with the new SSH rule shown)
+A window popped up after I hit Create new key pair. My-first-keypair appeared in the name box. Instead of defaults, I picked RSA along with the .pem format. The system reacted by showing a download prompt. At that moment, a file landed on my local drive.
 
-Configure Storage: Under "Configure storage," you will see a root volume of 8 GiB (gibibytes). This is the disk space for your server. The t2.micro instance comes with 30 GiB of free storage for EBS volumes, so this setting is fine.
+Almost messed up big time. That file nearly vanished. Keep hold of it. Tuck it away where it won’t disappear. Replacing it isn’t an option. My copy lives inside a folder named AWS-KEYS. Made sure another version sits safely elsewhere.
 
-Launch the Instance: Review the summary panel on the right and click the "Launch instance" button at the bottom of the page.
+**1.8 Configured Network Settings**
+This felt overwhelming at first, yet when I pressed Edit, there it was - AWS had quietly prepared both the Default VPC along with a Default subnet. A quiet nod went out to the person behind that move.
 
-Success! You will see a success message. Click the instance ID (e.g., i-1234567890abcdef0) to go to the Instances page, where you can see your server starting up. Its state will go from Pending to Running.
+A public IP gets handed out automatically when you flip the switch on that setting. Your machine shows up online because of it.
 
-Step 2: Create an SNS Topic for Alerts
-In the AWS search bar, type SNS and select Simple Notification Service.
+A fresh firewall - named my-first-sg - was set up. Inside it, just a single rule found its place
 
-On the SNS dashboard, click "Create topic".
+__Type: SSH
 
-Under "Details," select Standard (which is the default).
+Source: My IP__
 
-In "Name," enter HighCPUAlerts .
+My IP showed up right away on AWS. That setup keeps others out - just my machine gets through. Stays locked tight that way.
 
-Click the "Create topic" button at the bottom.
+**1.9 Configured Storage**
+That one time, I noticed 8 GiB sitting there. Left it be. Since the Free Tier includes 30 GiB, no issue came up.
 
-You will be taken to your new topic's page. Click the "Create subscription" button.
+**1.10 Clicked "Launch Instance"**
+I waited, then pressed the button.
 
-Create a Subscription:
+A green note popped up on the screen. Following it, I pressed the instance ID, then saw how the status shifted - first stuck at Pending, later flipping into Running.
 
-Topic ARN: This should already be filled in.
+I stared at the screen for a moment. "I just launched a server. In the cloud. From my laptop."
 
-Protocol: Select Email.
+Magic shimmered in the air. Not quite magic, though - just me figuring things out.
 
-Endpoint: Enter your email address (the one you want to receive alerts at).
+**Create an Alert System with SNS**
+These days, giving my server a voice feels like the next step. It started making sense after thinking it through slowly. A quiet machine that answers back - that idea stuck around. Talking instead of typing began to seem natural. The silence between us needed breaking somehow. Words replacing clicks just made sense eventually.
 
-Click "Create subscription".
+**2.1 Opened SNS**
+Last time I checked the console, SNS came up in the results. That stands for Simple Notification Service.
 
-Confirm your subscription: Go to your email inbox. You will see an email from "AWS Notifications" with the subject "AWS Notification - Subscription Confirmation". Open it and click "Confirm subscription" . You will see a confirmation page in your browser.
+**2.2 Created a Topic**
+A button labeled Create topic got pressed. The setting stayed on Standard without changes. HighCPUAlerts appeared as the chosen name.
 
-(Screenshot Suggestion: The AWS SNS subscription confirmation email)
+A single topic holds many messages together. Picture it like an email group where notes collect.
 
-Step 3: Create a CloudWatch Alarm
-In the AWS search bar, type CloudWatch and select it.
+**2.3 Created a Subscription**
+The screen showed a button marked Create subscription. After tapping it, the form appeared. Information had to go into each field. Every section was completed one after another
 
-In the left-hand navigation pane, under "Alarms," click "All alarms".
+Protocol: Email
 
-Click the orange "Create alarm" button.
+My Email Address
 
-Select Metric: Click "Select metric".
+After that, I pressed the button labeled Create subscription
 
-Navigate to: EC2 -> Per-Instance Metrics.
+**2.4 Confirmed My Email**
+A message waited inside my inbox, sent by AWS Notifications. There it was - a prompt to confirm, so I pressed the button marked Confirm subscription
 
-In the list of metrics, find your running instance. You can search for it using the name you gave it, MyFirstEC2Instance. Check the box next to the metric called CPUUtilization and click "Select metric".
+A screen lit up with words: my name was on a list. That moment brought quiet satisfaction. Messages from my machine could finally reach me by mail
 
-(Screenshot Suggestion: The CloudWatch "Select metric" screen with CPUUtilization highlighted for the specific instance)
+**Create CloudWatch Alarm**
+Finding someone to keep an eye on my server now.
 
-Configure Alarm:
+**3.1 Opened CloudWatch**
+Looking up CloudWatch happened inside the console.
 
-Under "Conditions," define the alarm trigger:
+**3.2 Created an Alarm**
+I Clicked All Alarms Then the Orange Create Alarm Button.
 
-For is, leave it as > (greater than).
+**3.3 Selected the Metric**
+One tap opened the menu - then I moved straight into settings. The next step showed up fast after that choice
 
-For CPUUtilization, enter 70 (this is the threshold).
+Ec2 per instance metrics
 
-Under "Additional configuration," for "Datapoints to alarm," ensure it's 1 out of 1.
+There I spotted the running instance - MyFirstEC2Instance was what I looked up - and after that, CPUUtilization got a check beside it. Then came the click on "Select metric." The screen changed slightly
 
-For "Missing data treatment," select "Treat missing data as missing" (or "ignore").
+**3.4 Alarm condition set**
+That alert turns on once the CPU jumps past seventy per cent.
 
-Click Next.
+One single datapoint triggers the alert - set at 70%. A breach happens fast; just one spike past that line wakes up the system.
 
-Configure Actions:
+**3.5 Configured the Action**
+For the Alarm state trigger setting, it was set to In alarm.
 
-Under "Alarm state trigger," make sure "In alarm" is selected.
+I Chose HighCPUAlerts As My SNS Topic.
 
-Under "Select an SNS topic," choose "Select an existing SNS topic".
+**3.6 Named the Alarm**
+A label popped into my head - High-CPU-Alarm - and I stuck with it
 
-Under "Send a notification to...," select the topic you created, HighCPUAlerts.
+**3.7 Created the Alarm**
+A tap on Create alarm made it show up right away, sitting there in the list with a steady OK mark.
 
-Click Next.
+A shadow watches over my server these days. It stands silent, always on duty.
 
-Add Name and Description:
+**Step Four: Testing All Parts**
+Here it was, time to see. Would the setup do what it needed to?
 
-Alarm name: High-CPU-Alarm
+**4.1 Connected to My Instance**
+Back at EC2, I found the active instance. A click on Connect opened the link
 
-Alarm description: Alarm when CPU exceeds 70% for 1 datapoint within 1 minute.
+Starting fresh meant skipping the usual setup. A browser window opened right into the server - no keys needed. For someone just learning, it felt like a quiet win.
 
-Click Next.
+A button labelled Connect got pressed. A terminal popped up inside the web page.
 
-Preview and Create: Review the settings and click "Create alarm".
+I Was Inside My Server.
 
-Step 4: Test the Alarm
-Now, let's simulate a high workload on our server to see the monitoring system in action!
+**4.2 Generated CPU Load**
+In The Terminal (AWS Command Line Interface-AWS CLI) I Typed
 
-Go back to the EC2 Instances page.
-
-Select your running instance (MyFirstEC2Instance). Click the "Connect" button at the top.
-
-You'll see the "Connect to instance" page. Select the "EC2 Instance Connect" tab. This is a browser-based SSH client. Click the "Connect" button.
-
-A terminal window will open inside your browser. You are now logged into your Linux server!
-
-Generate CPU Load: In the terminal, copy and paste the following command and press Enter:
-
+_text
 dd if=/dev/zero of=/dev/null &
-This command creates a high CPU load by reading from /dev/zero (which generates infinite zeros) and writing it to /dev/null (which discards it). The & runs it in the background.
+This command makes endless zeros, then throws them away. In effect, it says to the machine: push yourself to the limit_
 
-Monitor the Alarm:
+I pressed Enter.
 
-Go back to the CloudWatch console and click "All alarms".
+**4.3 Watched the Alarm**
+Clicking a new tab, I pulled up CloudWatch. The alarms screen loaded again after a refresh.
 
-After about 2-3 minutes, you will see your High-CPU-Alarm change from OK to In alarm.
+Still nothing after sixty seconds had gone by.
 
-Check your email! You should receive an email from AWS with the subject "ALARM: 'High-CPU-Alarm' in US East...".
+Last check - two minutes gone. All clear so far. Not too late yet.
 
-(Screenshot Suggestion: The CloudWatch Alarms page showing the alarm in the "In alarm" state)
-(Screenshot Suggestion: The SNS alert email in your inbox)
+After that, near three minutes in, everything shifted.
 
-Stop the CPU Load: In the terminal window where you're connected to your EC2 instance, run this command to stop the high CPU process:
+A flash of red lit up the room. Panic followed close behind.
 
+A shiver ran down my spine. This is really happening
+
+**4.4 Checked My Email**
+I Opened My Inbox.
+
+Out of nowhere, an email appeared. From AWS Notifications. The subject line read:
+
+ALARM High CPU Usage Alert in US East N Virginia
+
+Inside the message was info on my setup, along with what level the processor hit before triggering the notice. That happened just after three in the morning.
+
+Back in my chair, a grin spread across my face. The message from my server arrived - running at full effort, it said.
+
+**4.5 Stopped the Load**
+Back at the terminal, typing
+
+_text
 killall dd
-After a few minutes, the CloudWatch alarm will automatically return to the OK state as the CPU utilization drops.
+Everything came to a halt. After some time had passed, the alert on CloudWatch shifted back to normal._
 
-Section 4: Screenshots of Project
+Fine job by the machine today - smooth run, no hiccups at all.
 
-(In your actual GitHub or Medium article, you would paste your screenshots here. The descriptions below indicate what the reader should see.)
+**What I Learned- The Emotional Truth**
+What surprised me most wasn’t the tools themselves. Something else stuck - how solving real problems changed my thinking
 
-Screenshot 1: EC2 Instance Running
+**Default VPC First**
+Afraid of connecting systems, I started slow. Yet AWS handed me a ready-made structure - simple, functional. That freedom meant my attention stayed on the machine, not tangled in gateways or routing details. Starting complex? Not necessary. The first steps thrive on simplicity.
 
-Description: A screenshot of the AWS EC2 Instances page.
+**EC2 Instance Connect Makes Access Simpler**
+That moment I stumbled on SSH and keys? Total confusion. Suddenly, EC2 Instance Connect showed up - no more hurdles, just straight into the machine. Great when you're figuring things out. Give it a go.
 
-Visuals: The page should show one instance named "MyFirstEC2Instance" with an "Instance State" of "Running" and "Status Checks" showing "2/2 checks passed".
+**Monitoring Gives Life to the Cloud**
+That old server used to sit there, silent. Once CloudWatch was running, everything shifted. It started sending signals, almost like breathing. Warnings popped up in red - one blinked hard, urgent, as if shouting without sound
 
-Screenshot 2: CloudWatch Alarm in ALARM State
+**The Free Tier Is Generous- But Stay Aware**
+Even on Free Tier, I picked up one key habit - shutting down machines after use. When the job ends, a killall dd call halts the workload. Letting it run nonstop adds charges over time. Every new task gets a closing routine without exception.
 
-Description: A screenshot of the Amazon CloudWatch "All Alarms" page.
+**You Don't Have to Know Everything Before Beginning**
+Out of confusion came a setup that watches systems as it should. A message popped up one morning - proof that something ran right. That moment made clouds feel less distant, more mine. At first, Amazon's tools seemed foreign, nearly impossible.
 
-Visuals: The alarm named "High-CPU-Alarm" should have a state of "In alarm". The graph on the page should clearly show the CPU utilization spiking above the red threshold line (set at 70%).
+This sensation? It’s the one I aim for you to feel.
 
-Screenshot 3: SNS Email Notification Received
+AWS Services Used: Simple Summary
 
-Description: A screenshot of your email inbox.
+The AWS service and what it did for me
 
-Visuals: An email from "AWS Notifications" is open. The subject line reads something like ALARM: "High-CPU-Alarm" in US East (N. Virginia). The email body contains details about the alarm, including the metric (CPUUtilization), the threshold (70%), and the instance ID
+Running on Amazon EC2. That machine powers everything here. Core piece right there. Inside Amazon's virtual walls, my machine had a home. There, by sticking to the preset setup, life stayed uncomplicated. When the server worked harder, I noticed its CPU heat rising. That spike triggered a warning right away. Whenever the alert goes off, Amazon SNS shoots over an email. That’s how my server speaks up.
 
-Section 5: Lessons Learned / What I Would Do Differently
+**Screenshots I Captured**
+One snapshot came first, showing where I started. Another followed after, capturing what changed along the way. The last one arrived later, marking how things stood when I finished
 
-This project was an excellent introduction to core AWS services. Here are my key takeaways and what I would improve next time:
+A green light on the dashboard - my EC2 instance is up, humming along without a hitch. Status checks cleared, no warnings blinking. That quiet confidence when systems do what they should.
 
-Start with the Default VPC: 
-For absolute beginners, the default VPC is a lifesaver. It abstracts away the complexity of configuring internet gateways and route tables, letting you focus on the core EC2 and monitoring concepts.
+A flash of red on the screen - there it is, the CloudWatch alert lit up. That colour means business, showing the system caught something off. Instead of staying quiet, it spoke loudly. A sign things are running as they should, even when trouble shows. Not every signal brings panic; sometimes it's proof that the watch never blinked.
 
-EC2 Instance Connect is a Game-Changer: 
-I loved using EC2 Instance Connect to connect to my Linux instance. It's a secure, browser-based SSH client that doesn't require you to manage the private .pem key in a terminal. It's perfect for quick experiments and for novices.
+A message showed up, sent by the system itself. This wasn’t just any note - it meant the machine had reached out on its own.
 
-Monitoring is Deceptively Simple: 
-Setting up a CloudWatch alarm was incredibly easy, but I learned that its true power lies in configuration. The next step would be to set up an Auto Scaling Group. This service would use a CloudWatch alarm like the one we created to automatically launch new EC2 instances if the CPU load gets too high, and terminate them when it drops—making the application truly scalable and resilient.
+A folder named /screenshots held the files I set aside. Into the project they went, tucked neatly where they belong.
 
-Cost Awareness: 
-While the Free Tier covers the t2.micro instance and basic CloudWatch alarms, it was a good reminder to always terminate instances when they are not in use. The killall dd command stopped the load, but leaving the instance running would eventually incur charges after the Free Tier expires. I will add a reminder to clean up resources in future guides.
+**Publishing This Project**
+This path felt worth telling, which is why you can now find it across two spots
 
-Section 6: AWS Services Used and Their Purpose
+**On GitHub**
+AWS EC2 first instance monitoring repository created
 
-Service				Purpose in this Project
+This whole guide got turned into a README.md file
 
-Amazon EC2:	The core compute service. We launched a virtual server (EC2 instance) to run our workload. This is the "what" of our project. 
+A small directory appeared - named screenshots. Inside sat three image files I had placed there earlier. One by one, they were added, each saved carefully. The setup stayed minimal, just enough to keep things clear
 
-Amazon VPC:	The networking layer. We used the Default VPC to provide a logically isolated network for our EC2 instance, including an internet gateway for public access. This is the "where" of our project.
- 
-Amazon CloudWatch	The monitoring service. We created a CloudWatch Alarm to watch the CPUUtilization metric of our EC2 instance. It continuously collects and analyzes performance data.
- 
-Amazon SNS	The notification service. We created an SNS Topic and subscribed our email address to it. When the CloudWatch alarm was triggered, it sent a message to the topic, which was then forwarded to our inbox. 
+Marks in the document now connect pictures just right. How do the visuals attach? Through formatted text hints that guide each placement carefully
 
-How to Publish on GitHub & Medium
+Committed and pushed
 
-For GitHub:
+**On Medium**
+New Story Created
 
-Create a new repository named aws-ec2-first-instance-monitoring.
+Paste Content Into Editor
 
-Add a README.md file. Copy the entire content of this guide (sections 1-6) into the README.md.
+Uploaded screenshots directly
 
-Add a /screenshots folder. Upload the three screenshots you took into this folder.
+Hit publish
 
-Update the image links in your README. Instead of (Screenshot Suggestion...), use markdown like [EC2 Instance Running](./screenshots/ec2-running.png).
+Turns out, passing on lessons hit just right - same warmth as when they clicked for me.
 
-Commit and push the changes.
+**A Final Word to You**
+If You Are Unsure About Cloud Computing, This Is For You
 
-For Medium:
+Right there, I stood in your shoes.
 
-Create a new story.
+Fear crept in before I even started. That voice inside said it wouldn’t work. Starting now feels wrong - like everyone else already knows the rules.
 
-Paste the content. Copy the text from this guide into the Medium editor.
+Still, I went ahead. The orange button was pressed by me. Errors happened along the way. Lessons came from those. Growth followed after.
 
-Upload your images. Use the Medium editor's image tool to upload the three screenshots and place them in the correct sections (under Section 4).
+This time, I’ve put thoughts into words - maybe they’ll smooth your path more than my own ever did.
 
-Format. Use the heading options (H1, H2, H3) to format the section titles. Use backticks (`) to format code and commands (like dd if=/dev/zero of=/dev/null &).
+Just keep going. Each move forward counts.
 
-Add a "Tags" section. Add tags like AWS, CloudComputing, EC2, DevOps, Beginner, and Tutorial.
+Funny how a beep can mean so much - tell me once that morning alert goes off. Sharing those quiet wins matters, even from afar.
+
+**Peter Mwai Kamau**
+Cloud learner- always starting over- _NEGU- Never Ever Give Up!_
