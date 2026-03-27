@@ -227,8 +227,8 @@ Back in my chair, a grin spread across my face. The message from my server arriv
 **4.5 Stopped the Load**-
 Back at the terminal, typing
 
-+ _text
-killall dd
+_+ _text
+killall dd_
 + Everything came to a halt. After some time had passed, the alert on CloudWatch shifted back to normal._
 
 Fine job by the machine today - smooth run, no hiccups at all.
